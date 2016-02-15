@@ -1,0 +1,16 @@
+// Simplest vertex shader for shadertoy
+// Robert Winkler
+#version 330
+
+
+// Incoming per vertex... position (fills in 1 for w if from vec3 buf)
+layout (location = 0) in vec4 v_vertex;
+
+
+
+void main(void)
+{
+	// Don't forget to transform the geometry!
+	gl_Position = v_vertex;
+}
+
