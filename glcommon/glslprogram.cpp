@@ -34,7 +34,6 @@ bool GLSLProgram::compile_shader_file(const char * fileName,
 	}
 
 	ostringstream code;
-	//this right here is not good it reads EOF into the source in linux
 	
 	int c = inFile.get();
 	while (inFile.good()) {
@@ -80,7 +79,7 @@ bool GLSLProgram::compile_shader_string(const string & source, GLSLShader::GLSLS
 	}
 
 	
-	const char * c_code = source.c_str();
+	const char* c_code = source.c_str();
 
 	//fprintf(stderr, "\nsize = %d\n\n%s\n\n", int(source.size()), c_code);
 	glShaderSource(shaderHandle, 1, &c_code, NULL);
@@ -97,11 +96,11 @@ bool GLSLProgram::compile_shader_string(const string & source, GLSLShader::GLSLS
 		logString = "";
 		glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &length );
 		if (length > 0) {
-			char * c_log = new char[length];
+			char* c_log = (char*)malloc(length);
 			int written = 0;
 			glGetShaderInfoLog(shaderHandle, length, &written, c_log);
 			logString = c_log;
-			delete [] c_log;
+			free(c_log);
 		}
 
 		return false;
@@ -135,11 +134,11 @@ bool GLSLProgram::link()
 		glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length );
 
 		if (length > 0) {
-			char * c_log = new char[length];
+			char* c_log = (char*)malloc(length);
 			int written = 0;
 			glGetProgramInfoLog(handle, length, &written, c_log);
 			logString = c_log;
-			delete [] c_log;
+			free(c_log);
 		}
 
 		return false;
@@ -151,7 +150,7 @@ bool GLSLProgram::link()
 
 void GLSLProgram::use()
 {
-	if (handle <= 0 || (!linked)) return;
+	if (handle <= 0 || !linked) return;
 	glUseProgram(handle);
 }
 
@@ -281,7 +280,7 @@ void GLSLProgram::print_active_uniforms()
 	glGetProgramiv( handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLen);
 	glGetProgramiv( handle, GL_ACTIVE_UNIFORMS, &nUniforms);
 
-	name = (GLchar *) malloc( maxLen );
+	name = (GLchar *)malloc(maxLen);
 
 	printf(" Location | Name\n");
 	printf("------------------------------------------------\n");
@@ -303,7 +302,7 @@ void GLSLProgram::print_active_attribs()
 	glGetProgramiv(handle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
 	glGetProgramiv(handle, GL_ACTIVE_ATTRIBUTES, &nAttribs);
 
-	name = (GLchar *) malloc( maxLength );
+	name = (GLchar *)malloc(maxLength);
 
 	printf(" Index | Name\n");
 	printf("------------------------------------------------\n");
@@ -318,25 +317,25 @@ void GLSLProgram::print_active_attribs()
 
 bool GLSLProgram::validate()
 {
-	if (!isLinked()) return false;
+	if (!linked) return false;
 
 	GLint status;
-	glValidateProgram( handle );
-	glGetProgramiv( handle, GL_VALIDATE_STATUS, &status );
+	glValidateProgram(handle);
+	glGetProgramiv(handle, GL_VALIDATE_STATUS, &status);
 
 	if (GL_FALSE == status) {
 		// Store log and return false
 		int length = 0;
 		logString = "";
 
-		glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length );
+		glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length);
 
 		if (length > 0) {
-			char * c_log = new char[length];
+			char* c_log = (char*)malloc(length);
 			int written = 0;
 			glGetProgramInfoLog(handle, length, &written, c_log);
 			logString = c_log;
-			delete [] c_log;
+			free(c_log);
 		}
 
 		return false;
@@ -389,7 +388,7 @@ int compile_link_shaders(GLSLProgram& prog, int num_shaders, ...)
 	int type;
 	char *file= NULL;
 
-	GLSLProgram tmp_prog;;
+	GLSLProgram tmp_prog;
 
 
 	// Iterate over this argument list

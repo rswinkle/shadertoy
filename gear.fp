@@ -22,28 +22,24 @@ void main()
 
 	//change this to make gear move faster/slower
 	float rate = 1.4;
-	float prongs = 8; //any even whole number works
+	float teeth = 8; //any even whole number works
 	
 	vec2 p = p_orig + 0.3 * vec2(sin(rate*iGlobalTime), cos(rate*iGlobalTime));
 	
-
 	float a = atan(p.x,p.y);
 	float r = length(p);
 
-	//[-0.2, 0.8]
-	float offset = mod(prongs/2, 2.0);
-	float s = 0.2 + 0.6*sin(a*prongs + (rate*prongs/2.0)*iGlobalTime + 3.14159*offset);
+	float offset = mod(teeth/2, 2.0);
+	float s = 0.2 + 0.6*sin(a*teeth + (rate*teeth/2.0)*iGlobalTime + 3.14159*offset);
 
-	//[ ]
 	float d = 0.52 + 0.25 * pow(s, 1.0);
 	float h = r/d;
-	float f = segm(0.1, 0.98, 0.02, h);//smoothstep(0.92, 1.0, h);
-
+	float f = segm(0.1, 0.98, 0.02, h);
 
 	a = atan(p_orig.x, p_orig.y);
 	r = length(p_orig);
 
-	s = 0.3 + 0.6 * sin(a*prongs*1.5);
+	s = 0.3 + 0.6 * sin(a*teeth*1.5);
 	d = 0.8 + 0.2 * pow(s, 1.0);
 	h = r/d;
 
@@ -55,11 +51,6 @@ void main()
 
 
 	vec3 bcol = vec3(0.0);
-	//bcol = mix(bcol, vec3(0.0, 0.0, 1.0), );
-
-	//bcol *= 0.85 + 0.15*q.x*q.y;
-	//bcol *= 0.5 + 0.5*pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.25 );
-
 	fragColor = vec4(mix(bcol, vec3(0.55,0.55,0.55), f), 1.0);
 }
 

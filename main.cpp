@@ -31,9 +31,9 @@ int main(int argc, char** argv)
 {
 
 	if (argc < 2) {
-		printf("usage: %s fragment_shader [refresh_delay]\n", argv[0]);
+		printf("usage: %s fragment_shader [refresh_delay=3]\n\n", argv[0]);
 		printf("The shader is reloaded every refresh_delay seconds.\n");
-		printf("refresh delay defaults to 3 and it can be fractional ie 3.5)\n");
+		printf("refresh_delay can be fractional ie 3.5)\n");
 		return 0;
 	}
 
