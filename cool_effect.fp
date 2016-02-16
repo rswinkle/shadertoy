@@ -23,33 +23,28 @@ float segm( float a, float b, float c, float x )
 void main()
 {
 	vec2 q = gl_FragCoord.xy/iResolution.xy;
-	vec2 p_orig = (2.0*gl_FragCoord.xy-iResolution.xy)/min(iResolution.y,iResolution.x);
+	vec2 p = (2.0*gl_FragCoord.xy-iResolution.xy)/min(iResolution.y,iResolution.x);
 
 	float rate = 0.6;
 	
-	vec2 p = p_orig + 0.3 * vec2(sin(rate*iGlobalTime), cos(rate*iGlobalTime));
+	p += 0.3 * vec2(sin(rate*iGlobalTime), cos(rate*iGlobalTime));
 	
 	//p *= 0.65; // zoom in
 
 	float a = atan(p.x,p.y);
 	float r = length(p);
 
-	//[-0.2, 0.8]
-	float s = 0.2 + 0.6*sin(a*8.0 + (rate*4)*iGlobalTime);
+	//[-0.2, 0.6]
+	float s = 0.2 + 0.6*sin(a*8.0 + (rate*2)*iGlobalTime);
 
 	//[ ]
-	float d = 0.5 + 0.25 * pow(s, 1.0);
+	float d = 0.5 + 0.2 * pow(s, 1.0);
 	float h = r/d;
 	float f = segm(0.1, 0.98, 0.02, h);//smoothstep(0.92, 1.0, h);
 
-
-	a = atan(p_orig.x, p_orig.y);
-	r = length(p_orig);
-
-	s = 0.3 + 0.6 * sin(a*12);
-	d = 0.8 + 0.2 * pow(s, 1.0);
-	h = r/d;
-	f = (h >= 1.02) ? smoothstep(1.02, 1.04, h) : f;
+	s = 0.5 + 0.6 * sin(a*16);
+	h = r/s;
+	f *= smoothstep(1.02, 1.04, h);
 
 	//s = sin(4.0*a + 0.4*iGlobalTime);
 	//f = 1.0 - step(s, r);

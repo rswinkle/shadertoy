@@ -62,23 +62,18 @@ bool GLSLProgram::compile_shader_string(const string & source, GLSLShader::GLSLS
 	switch (type) {
 	case GLSLShader::VERTEX:
 		shaderHandle = glCreateShader(GL_VERTEX_SHADER);
-		vert_shader = shaderHandle;
 		break;
 	case GLSLShader::FRAGMENT:
 		shaderHandle = glCreateShader(GL_FRAGMENT_SHADER);
-		frag_shader = shaderHandle;
 		break;
 	case GLSLShader::GEOMETRY:
 		shaderHandle = glCreateShader(GL_GEOMETRY_SHADER);
-		geometry_shader = shaderHandle;
 		break;
 	case GLSLShader::TESS_CONTROL:
 		shaderHandle = glCreateShader(GL_TESS_CONTROL_SHADER);
-		tess_control_shader = shaderHandle;
 		break;
 	case GLSLShader::TESS_EVALUATION:
 		shaderHandle = glCreateShader(GL_TESS_EVALUATION_SHADER);
-		tess_eval_shader = shaderHandle;
 		break;
 	default:
 		return false;
@@ -111,28 +106,6 @@ bool GLSLProgram::compile_shader_string(const string & source, GLSLShader::GLSLS
 
 		return false;
 	} else {
-		/*
-		if (linked) {
-			switch (type) {
-			case GLSLShader::VERTEX:
-				glDetachShader(handle, vert_shader);
-				break;
-			case GLSLShader::FRAGMENT:
-				glDetachShader(handle, frag_shader);
-				break;
-			case GLSLShader::GEOMETRY:
-				glDetachShader(handle, geometry_shader);
-				break;
-			case GLSLShader::TESS_CONTROL:
-				glDetachShader(handle, tess_control_shader);
-				break;
-			case GLSLShader::TESS_EVALUATION:
-				glDetachShader(handle, tess_eval_shader);
-				break;
-			}
-			linked = false;
-		}
-		*/
 		// Compile succeeded, attach shader and return true
 		glAttachShader(handle, shaderHandle);
 
@@ -415,24 +388,32 @@ int compile_link_shaders(GLSLProgram& prog, int num_shaders, ...)
 
 	int type;
 	char *file= NULL;
+
+	GLSLProgram tmp_prog;;
+
+
 	// Iterate over this argument list
 	for (int i=0; i<num_shaders; ++i) {
 	
-		type = va_arg(shader_list, int);	// Number of attributes
+		type = va_arg(shader_list, int);// Number of attributes
 		file = va_arg(shader_list, char*);
-		if (!prog.compile_shader_file(file, GLSLShader::GLSLShaderType(type)))
+		if (!tmp_prog.compile_shader_file(file, GLSLShader::GLSLShaderType(type)))
 		{
-			printf("%s shader failed to compile!\n%s", file, prog.log().c_str());
+			printf("%s shader failed to compile!\n%s", file, tmp_prog.log().c_str());
 			return 0;
 		}
 	}
 	va_end(shader_list);
 
-	if (!prog.link()) {
-		printf("Shader program failed to link!\n%s",
-			   prog.log().c_str());
+	if (!tmp_prog.link()) {
+		printf("Shader program failed to link!\n%s", tmp_prog.log().c_str());
 		return 0;
 	}
+
+	if (prog.isLinked())
+		prog.delete_program();
+		
+	prog = tmp_prog;
 
 	prog.use();
 	return 1;

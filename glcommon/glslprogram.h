@@ -40,12 +40,6 @@ private:
 	bool linked;
 	string logString;
 	
-	int vert_shader;
-	int frag_shader;
-	int geometry_shader;
-	int tess_control_shader;
-	int tess_eval_shader;
-
 
 	int  get_uniform_location(const char * name);
 	bool file_exists(const string & fileName);

@@ -60,8 +60,7 @@ int main(int argc, char** argv)
 	                    1.0,  1.0, 0 };
 	mat4 identity;
 
-	GLSLProgram prog, tmp_prog;
-	printf("sizeof(points) = %lu\n", sizeof(points));
+	GLSLProgram prog;
 
 	Buffer triangle(1);
 	triangle.bind(GL_ARRAY_BUFFER);
@@ -96,9 +95,8 @@ int main(int argc, char** argv)
 					quit = 1;
 					break;
 				case SDL_SCANCODE_RETURN:
-					if (compile_link_shaders(tmp_prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
-						prog.delete_program();
-						prog = tmp_prog;
+					if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
+						prog.set_uniform("iResolution", vec3(xres, yres, xres/yres));
 					}
 				}
 
@@ -122,12 +120,9 @@ int main(int argc, char** argv)
 			printf("%.3f FPS\n", (float)counter*1000/(float)tmp);
 			old_time = new_time;
 			counter = 0;
-			if (compile_link_shaders(tmp_prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
-				prog.delete_program();
-				prog = tmp_prog;
+			if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
 				prog.set_uniform("iResolution", vec3(xres, yres, xres/yres));
 			}
-			tmp_prog.delete_program();
 		}
 
 		prog.set_uniform("iGlobalTime", new_time/1000.0f);
