@@ -1,5 +1,5 @@
 // Robert Winkler
-#version 330
+#version 130
 
 
 
@@ -32,9 +32,9 @@ void main()
 	float offset = mod(teeth/2, 2.0);
 	float s = 0.2 + 0.6*sin(a*teeth + (rate*teeth/2.0)*iGlobalTime + 3.14159*offset);
 
-	float d = 0.52 + 0.25 * pow(s, 1.0);
+	float d = 0.52 + 0.22 * pow(s, 1.0);
 	float h = r/d;
-	float f = segm(0.1, 0.98, 0.02, h);
+	float f = segm(0.1, 0.96, 0.02, h);
 
 	a = atan(p_orig.x, p_orig.y);
 	r = length(p_orig);
@@ -44,7 +44,7 @@ void main()
 	h = r/d;
 
 	//I'm sure there's a way to avoid the branch ...
-	f = (h >= 1.02) ? smoothstep(1.02, 1.04, h) : f;
+	f = (h >= 0.99) ? smoothstep(0.99, 1.0, h) : f;
 
 	//s = sin(4.0*a + 0.4*iGlobalTime);
 	//f = 1.0 - step(s, r);

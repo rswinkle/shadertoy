@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 	glVertexAttribPointer(GLSLShader::ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 
-	compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file);
+	compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shaders/shadertoy.vp", GLSLShader::FRAGMENT, shader_file);
 
 	prog.set_uniform("iResolution", vec3(WIDTH, HEIGHT, WIDTH/float(HEIGHT)));
 
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 					quit = 1;
 					break;
 				case SDL_SCANCODE_RETURN:
-					if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
+					if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shaders/shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
 						prog.set_uniform("iResolution", vec3(xres, yres, xres/yres));
 					}
 				}
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 			printf("%.3f FPS\n", (float)counter*1000/(float)tmp);
 			old_time = new_time;
 			counter = 0;
-			if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
+			if (compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shaders/shadertoy.vp", GLSLShader::FRAGMENT, shader_file)) {
 				prog.set_uniform("iResolution", vec3(xres, yres, xres/yres));
 			}
 		}

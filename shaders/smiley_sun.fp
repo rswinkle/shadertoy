@@ -1,5 +1,5 @@
 // Robert Winkler
-#version 330
+#version 130
 
 
 // Created by inigo quilez - iq/2013

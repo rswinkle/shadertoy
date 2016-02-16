@@ -4,7 +4,7 @@
 
 
 // Robert Winkler
-#version 330
+#version 130
 
 
 

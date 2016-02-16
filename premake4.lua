@@ -14,7 +14,8 @@ solution "ShaderToy"
 		"glcommon/rsw_math.cpp",
 		"glcommon/rsw_math.h",
 		"glcommon/glslprogram.cpp",
-		"glcommon/glslprogram.h"
+		"glcommon/glslprogram.h",
+		"glcommon/GLObjects.h"
 		}
 		--excludes { }
 		includedirs { "./glcommon" }
