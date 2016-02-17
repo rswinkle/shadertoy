@@ -11,8 +11,6 @@ solution "ShaderToy"
 		files
 		{
 		"main.cpp",
-		"glcommon/rsw_math.cpp",
-		"glcommon/rsw_math.h",
 		"glcommon/glslprogram.cpp",
 		"glcommon/glslprogram.h"
 		}

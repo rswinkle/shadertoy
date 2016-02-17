@@ -1,24 +1,19 @@
-#include "rsw_math.h"
-#include "GLObjects.h"
 #include "glslprogram.h"
 
 #include <cstdio>
-
-#include <iostream>
+#include <cassert>
 
 #include <SDL2/SDL.h>
 
 #define WIDTH 640
 #define HEIGHT 480
 
+#define ATTR_VERTEX 0
+
 using namespace std;
 
-using rsw::vec4;
-using rsw::mat4;
 
-vec4 Red(1.0f, 0.0f, 0.0f, 0.0f);
-vec4 Green(0.0f, 1.0f, 0.0f, 0.0f);
-vec4 Blue(0.0f, 0.0f, 1.0f, 0.0f);
+
 
 SDL_Window* window;
 SDL_GLContext glcontext;
@@ -58,24 +53,37 @@ int main(int argc, char** argv)
 	                   -1.0,  1.0, 0,
 	                    1.0, -1.0, 0,
 	                    1.0,  1.0, 0 };
-	mat4 identity;
+
+
+
+	GLuint triangle;
+	glGenBuffers(1, &triangle);
+	glBindBuffer(GL_ARRAY_BUFFER, triangle);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(ATTR_VERTEX);
+	glVertexAttribPointer(ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+	const char vs_text[] = "#version 330\nlayout (location = 0) in vec4 v_vertex;\nvoid main(void) { gl_Position = v_vertex; }\n"
+
+	GLuint vert_shader = compile_shader_str(vs_text, GL_VERTEX_SHADER);
+	assert(vert_shader);
+	GLuint frag_shader = compile_shader_file(shader_file, GL_FRAGMENT_SHADER);
+	if (!frag_shader)
+		return 0;
+
+	GLuint prog = glCreateProgram();
+	if (!prog)
+		return 0;
+	glAttachShader(
+
 
 	GLSLProgram prog;
-
-	Buffer triangle(1);
-	triangle.bind(GL_ARRAY_BUFFER);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(GLSLShader::ATTR_VERTEX);
-	glVertexAttribPointer(GLSLShader::ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-
 	compile_link_shaders(prog, 2, GLSLShader::VERTEX, "../shadertoy.vp", GLSLShader::FRAGMENT, shader_file);
 
 	prog.set_uniform("iResolution", vec3(WIDTH, HEIGHT, WIDTH/float(HEIGHT)));
 
-	//glClearColor(0, 0, 0, 1);
-
-	
 
 	SDL_Event e;
 	int quit = 0;
@@ -138,6 +146,139 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
+
+int compile_shader_file(const char* filename, GLenum shader_type)
+{
+	FILE *file = fopen(filename, "r");
+	if (!file)
+		return 0;
+
+	char* shader_str = NULL;
+	if (!file_read(file, &shader_str))
+		return 0;
+
+	return compile_shader_str(shader_str, shader_type);
+}
+
+
+int compile_shader_str(const char* shader_str, GLenum shader_type)
+{
+	GLuint shader = glCreateShader(shader_type);
+	if (!shader)
+		return 0;
+
+	glShaderSource(shader, 1, &shader_str, NULL);
+	glCompileShader(shader);
+
+	int result;
+	glGetShaderiv(vert_shader, GL_COMPILE_STATUS, &result);
+	if (GL_FALSE == result) {
+		int length = 0;
+		glGetShaderiv(vert_shader, GL_INFO_LOG_LENGTH, &length);
+		if (length > 0) {
+			char* c_log = (char*)malloc(length);
+			int written = 0;
+			glGetShaderInfoLog(shaderHandle, length, &written, c_log);
+			printf("%s\n", c_log);
+			free(c_log);
+		}
+
+		return 0;
+	}
+
+	return shader;
+}
+
+
+
+int load_shaders(GLuint* program, char* frag_file)
+{
+
+	
+	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
+	if (!vert_shader)
+		return 0;
+
+
+	
+	glShaderSource(vert_shader, 1, &vs_text, NULL);
+
+	glCompileShader(vert_shader);
+
+
+
+
+
+
+
+	FILE* file = fopen(frag_file, "r");
+	
+	char* frag_text = NULL;
+	if (!file_read(file, &frag_text)) {
+		return 0;
+	}
+
+	GLuint tmp_prog;
+	tmp_prog = glCreateProgram();
+	if (!tmp_prog) {
+		free(frag_text);
+		return 0;
+	}
+	
+
+
+	if (*program = 0) {
+		handle = glCreateProgram();
+		if (handle == 0) {
+			logString = "Unable to create shader program.";
+			return false;
+		}
+	}
+	
+
+
+int file_read(FILE* file, char** str)
+{
+	char* data;
+	size_t size;
+
+	fseek(file, 0, SEEK_END);
+	size = ftell(file);
+	if (!size) {
+		fclose(file);
+		return 0;
+	}
+
+	data = malloc(size+1);
+	if (!data) {
+		fclose(file);
+		return 0;
+	}
+
+	rewind(file);
+	if (!fread(data, size, 1, file)) {
+		printf("read failure\n");
+		fclose(file);
+		free(data);
+		return 0;
+	}
+
+	data[size] = 0; /* null terminate in all cases even if reading binary data */
+
+	out->data = data;
+	out->len = size;
+	out->elem_size = 1;
+
+	fclose(file);
+	return size;
+}
+
+
+
+
+
+
 
 
 void setup_context()

@@ -36,7 +36,7 @@ namespace GLSLShader {
 class GLSLProgram
 {
 private:
-	int  handle;
+	GLuint  handle;
 	bool linked;
 	string logString;
 	
