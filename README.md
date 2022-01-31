@@ -12,3 +12,5 @@ to the bare minimum necessary but it works well enough already.
 shadertoy will try to reload/recompile the fragment shader in filename
 every refreshdelay seconds.
 
+shadertoy is under the MIT license.
+
